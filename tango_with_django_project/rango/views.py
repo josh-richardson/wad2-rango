@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from rango.models import Category, Page
+from rango.forms import CategoryForm
 import getpass
 
 
@@ -26,3 +27,16 @@ def show_category(request, category_name_slug):
         context_dict['pages'] = None
     return render(request, 'rango/category.html', context_dict)
 
+
+def add_category(request):
+    form = CategoryForm(request.POST)
+    if request.method == 'POST':
+
+        if form.is_valid():
+            form.save(commit=True)
+            return index(request)
+        else:
+            print("ERRORS:")
+            print(form.errors)
+    else:
+        return render(request, 'rango/add_category.html', {'form': form})
