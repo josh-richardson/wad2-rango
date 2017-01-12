@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About</title>
+</head>
+<body>
+    <p>This tutorial has been put together by {{ username }}</p>
+    <img src="{% static "images/about.jpg"%}" alt="Picture of Aboutness"/>
+    <a href="/rango/">Index</a><br />
+</body>
+</html>
