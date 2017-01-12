@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-
 # Create your models here.
 from django.template.defaultfilters import slugify
 
@@ -14,6 +13,11 @@ class Category(models.Model):
     slug = models.SlugField(unique=True)
 
     def save(self, *args, **kwargs):
+        if self.views < 0:
+            self.views = 0
+        if self.likes < 0:
+            self.likes = 0
+
         self.slug = slugify(self.name)
         super(Category, self).save(*args, **kwargs)
 
