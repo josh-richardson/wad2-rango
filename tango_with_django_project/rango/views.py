@@ -29,9 +29,9 @@ def show_category(request, category_name_slug):
 
 
 def add_category(request):
-    form = CategoryForm(request.POST)
+    form = CategoryForm()
     if request.method == 'POST':
-
+        form = CategoryForm(request.POST)
         if form.is_valid():
             form.save(commit=True)
             return index(request)
