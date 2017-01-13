@@ -1,5 +1,6 @@
 from __future__ import print_function
 import getpass
+from datetime import datetime
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -13,6 +14,7 @@ from rango.models import Category, Page
 
 
 def index(request):
+    request.session.set_test_cookie()
     category_list = Category.objects.order_by('-likes')[:5]
     pages_list = Page.objects.order_by('-views')[:5]
     context_dict = {'categories': category_list, 'pages': pages_list}
@@ -20,6 +22,9 @@ def index(request):
 
 
 def about(request):
+    if request.session.test_cookie_worked():
+        print("Test cookie worked!")
+        request.session.delete_test_cookie()
     return render(request, 'rango/about.html', context={'username': getpass.getuser()})
 
 
@@ -133,3 +138,17 @@ def restricted(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('index'))
+
+
+def visitor_cookie_handler(request, response):
+    visits_cookie = int(request.COOKIES.get('visits', '1'))
+    last_visit_cookie = request.COOKIES.get('last_visit', str(datetime.now()))
+    last_visit_time = datetime.strftime(last_visit_cookie[:-7], '%Y-%m-%d %H:%M:%S')
+    visits = 0
+    if (datetime.now() - last_visit_time).days > 0:
+        visits = visits_cookie + 1
+        response.set_cookie('last_visit', str(datetime.now()))
+    else:
+        response.set_cookie('last_visit', last_visit_cookie)
+
+    response.set_cookie('visits', visits)
