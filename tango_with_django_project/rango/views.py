@@ -22,7 +22,8 @@ def index(request):
 
 
 def about(request):
-    return render(request, 'rango/about.html', context={'username': getpass.getuser()})
+    visitor_cookie_handler(request)
+    return render(request, 'rango/about.html', context={'username': getpass.getuser(), 'visits': request.session['visits']})
 
 
 def show_category(request, category_name_slug):
